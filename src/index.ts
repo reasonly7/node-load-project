@@ -1,5 +1,6 @@
 import { loadProject } from './utils/loadProject';
 import * as path from 'node:path';
 
-const fileList = await loadProject(path.resolve(__dirname, '..'));
-console.log(fileList);
+const filesMap = await loadProject(path.resolve(__dirname, '..'));
+console.log(Object.keys(filesMap))
+// writeFileSync('test.txt', JSON.stringify(filesMap, null, 2));

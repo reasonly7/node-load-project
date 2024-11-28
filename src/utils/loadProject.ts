@@ -10,13 +10,22 @@ const createIgnore = (
   return ignore().add([parentIgnore, ...extraRules]);
 };
 
+const toUnixPath = (filePath: string) =>
+  path.normalize(filePath).replace(/\\/g, '/');
+
+/**
+ * load project files in memory
+ * @param projectPath string
+ * @returns Record<string, string>, like: { "src/index.ts": "..."}
+ */
 export const loadProject = async (projectPath: string) => {
-  const fileList: string[] = [];
+  const filesMap: Record<string, string> = {};
   const initalIgnore = ignore().add(['.git']);
 
   const traverse = async (currentPath: string, parentIgnore: Ignore) => {
     let currentIgnore = createIgnore(parentIgnore);
     const ignoreFilePath = path.join(currentPath, '.gitignore');
+
     if (existsSync(ignoreFilePath)) {
       const gitignoreContent = await fs.readFile(ignoreFilePath, 'utf-8');
       currentIgnore = createIgnore(
@@ -38,12 +47,14 @@ export const loadProject = async (projectPath: string) => {
       if (entry.isDirectory()) {
         await traverse(fullPath, currentIgnore);
       } else if (entry.isFile()) {
-        fileList.push(relativePath);
+        const key = toUnixPath(relativePath);
+        const value = await fs.readFile(fullPath, 'utf-8');
+        filesMap[key] = value;
       }
     }
   };
 
-  // 开始递归遍历
   await traverse(projectPath, initalIgnore);
-  return fileList;
+
+  return filesMap;
 };
