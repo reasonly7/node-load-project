@@ -13,5 +13,8 @@
     "typescript": "~5.6.2",
     "vite": "^6.0.0",
     "vite-node": "^2.1.6"
+  },
+  "dependencies": {
+    "ignore": "^6.0.2"
   }
 }
