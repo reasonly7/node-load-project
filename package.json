@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "nodemon --exec vite-node ./src/index.ts",
+    "dev": "nodemon --ignore output/ --exec vite-node ./src/index.ts",
     "build": "tsc && vite build"
   },
   "devDependencies": {
